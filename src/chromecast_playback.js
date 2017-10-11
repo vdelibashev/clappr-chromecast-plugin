@@ -1,5 +1,6 @@
 import {Events, Log, Playback, template} from 'clappr'
 import chromecastHTML from './public/chromecast.html'
+import chromecastOverlayStatusHTML from './public/playback_overlay_status.html'
 
 const TICK_INTERVAL = 100
 
@@ -7,6 +8,7 @@ export default class ChromecastPlayback extends Playback {
 
   get name() { return 'chromecast_playback' }
   get template() { return template(chromecastHTML) }
+  get statusTemplate() { return template(chromecastOverlayStatusHTML) }
   get attributes() { return { class: 'chromecast-playback' } }
 
   get isReady() { return true }
@@ -22,6 +24,7 @@ export default class ChromecastPlayback extends Playback {
     this.settings.default && (this.settings.default = this.settings.default.filter(noVolume))
     this.settings.left && (this.settings.left = this.settings.left.filter(noVolume))
     this.settings.right && (this.settings.right = this.settings.right.filter(noVolume))
+    this.showPlaybackStatus = options.showPlaybackStatus || false
   }
 
   render() {
@@ -31,6 +34,11 @@ export default class ChromecastPlayback extends Playback {
       this.$('.chromecast-playback-background').css('background-image', 'url(' + this.options.poster + ')')
     } else {
       this.$('.chromecast-playback-background').css('background-color', '#666')
+    }
+    let mediaTitle =  this.currentMedia.media.metadata.title || '...' 
+    let statusTemplate  = this.statusTemplate({mediaTitle: mediaTitle})
+    if(this.showPlaybackStatus && statusTemplate){
+        this.$('.chromecast-playback-overlay').html(statusTemplate)
     }
   }
 

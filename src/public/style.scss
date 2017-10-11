@@ -19,6 +19,27 @@
     background-color: #000;
     opacity: 0.4;
   }
+
+  .chromecast-playback-overlay .chromecast-playback-overlay-status{
+        position: absolute;
+        display:table;
+        bottom: 80px;
+        margin-left: 20px;
+  }
+
+  .chromecast-playback-overlay .cast-icon-white{
+        display:table-cell;
+        vertical-align:middle;
+        color: #fff;
+  }
+
+   .chromecast-playback-overlay .casting-media-title{
+        display:table-cell;
+        vertical-align:middle;
+        padding-left: 10px;
+        color: #fff; 
+  }
+
 }
 
 .chromecast-button {
@@ -35,6 +56,7 @@
   vertical-align: middle;
   text-align: left;
   cursor: pointer;
+  float: left;
   @include font-smoothing(antialiased);
   @include transition(all 0.1s ease);
 

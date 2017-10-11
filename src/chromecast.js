@@ -61,6 +61,7 @@ export default class ChromecastPlugin extends UICorePlugin {
     if (Browser.isChrome) {
       this.appId = this.options.appId || DEFAULT_CLAPPR_APP_ID
       this.deviceState = DEVICE_STATE.IDLE
+      this.showPlaybackStatus = this.options.showPlaybackStatus || false;
       this.embedScript()
     } else {
       this.disable()
@@ -188,7 +189,9 @@ export default class ChromecastPlugin extends UICorePlugin {
       currentMedia: mediaSession,
       mediaControl: this.core.mediaControl,
       poster: this.core.options.poster,
-      settings: this.originalPlayback.settings
+      settings: this.originalPlayback.settings,
+      showPlaybackStatus: this.showPlaybackStatus
+
     })
     this.src = this.originalPlayback.src
     this.playbackProxy = new ChromecastPlayback(options)

@@ -196,6 +196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (_clappr.Browser.isChrome) {
 	      this.appId = this.options.appId || DEFAULT_CLAPPR_APP_ID;
 	      this.deviceState = DEVICE_STATE.IDLE;
+	      this.showPlaybackStatus = this.options.showPlaybackStatus || false;
 	      this.embedScript();
 	    } else {
 	      this.disable();
@@ -352,7 +353,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        currentMedia: mediaSession,
 	        mediaControl: this.core.mediaControl,
 	        poster: this.core.options.poster,
-	        settings: this.originalPlayback.settings
+	        settings: this.originalPlayback.settings,
+	        showPlaybackStatus: this.showPlaybackStatus
+
 	      });
 	      this.src = this.originalPlayback.src;
 	      this.playbackProxy = new _chromecast_playback2['default'](options);
@@ -612,6 +615,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _publicChromecastHtml2 = _interopRequireDefault(_publicChromecastHtml);
 
+	var _publicPlayback_overlay_statusHtml = __webpack_require__(23);
+
+	var _publicPlayback_overlay_statusHtml2 = _interopRequireDefault(_publicPlayback_overlay_statusHtml);
+
 	var TICK_INTERVAL = 100;
 
 	var ChromecastPlayback = (function (_Playback) {
@@ -626,6 +633,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'template',
 	    get: function get() {
 	      return (0, _clappr.template)(_publicChromecastHtml2['default']);
+	    }
+	  }, {
+	    key: 'statusTemplate',
+	    get: function get() {
+	      return (0, _clappr.template)(_publicPlayback_overlay_statusHtml2['default']);
 	    }
 	  }, {
 	    key: 'attributes',
@@ -658,6 +670,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.settings['default'] && (this.settings['default'] = this.settings['default'].filter(noVolume));
 	    this.settings.left && (this.settings.left = this.settings.left.filter(noVolume));
 	    this.settings.right && (this.settings.right = this.settings.right.filter(noVolume));
+	    this.showPlaybackStatus = options.showPlaybackStatus || false;
 	  }
 
 	  _createClass(ChromecastPlayback, [{
@@ -669,6 +682,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.$('.chromecast-playback-background').css('background-image', 'url(' + this.options.poster + ')');
 	      } else {
 	        this.$('.chromecast-playback-background').css('background-color', '#666');
+	      }
+	      var mediaTitle = this.currentMedia.media.metadata.title || '...';
+	      var statusTemplate = this.statusTemplate({ mediaTitle: mediaTitle });
+	      if (this.showPlaybackStatus && statusTemplate) {
+	        this.$('.chromecast-playback-overlay').html(statusTemplate);
 	      }
 	    }
 	  }, {
@@ -813,7 +831,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	// module
-	exports.push([module.id, ".chromecast-playback {\n  height: 100%;\n  width: 100%; }\n  .chromecast-playback .chromecast-playback-background, .chromecast-playback .chromecast-playback-overlay {\n    position: absolute;\n    height: 100%;\n    width: 100%; }\n  .chromecast-playback .chromecast-playback-background {\n    background-size: contain; }\n  .chromecast-playback .chromecast-playback-overlay {\n    background-color: #000;\n    opacity: 0.4; }\n\n.chromecast-button {\n  background: transparent;\n  border: 0;\n  width: 32px;\n  height: 32px;\n  font-size: 22px;\n  line-height: 32px;\n  letter-spacing: 0;\n  margin: 0 6px;\n  color: #fff;\n  opacity: 0.5;\n  vertical-align: middle;\n  text-align: left;\n  cursor: pointer;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  -webkit-transition: all 0.1s ease;\n  -moz-transition: all 0.1s ease;\n  -o-transition: all 0.1s ease;\n  transition: all 0.1s ease; }\n  .chromecast-button:hover {\n    opacity: 0.75;\n    text-shadow: rgba(255, 255, 255, 0.8) 0 0 5px; }\n  .chromecast-button:focus {\n    outline: none; }\n  .chromecast-button svg {\n    width: 24px;\n    height: 24px; }\n    .chromecast-button svg #cast, .chromecast-button svg #cast-on, .chromecast-button svg #Path {\n      fill: #fff;\n      stroke: #fff;\n      stroke-width: 0.5px; }\n", ""]);
+	exports.push([module.id, ".chromecast-playback {\n  height: 100%;\n  width: 100%; }\n  .chromecast-playback .chromecast-playback-background, .chromecast-playback .chromecast-playback-overlay {\n    position: absolute;\n    height: 100%;\n    width: 100%; }\n  .chromecast-playback .chromecast-playback-background {\n    background-size: contain; }\n  .chromecast-playback .chromecast-playback-overlay {\n    background-color: #000;\n    opacity: 0.4; }\n  .chromecast-playback .chromecast-playback-overlay .chromecast-playback-overlay-status {\n    position: absolute;\n    display: table;\n    bottom: 80px;\n    margin-left: 20px; }\n  .chromecast-playback .chromecast-playback-overlay .cast-icon-white {\n    display: table-cell;\n    vertical-align: middle;\n    color: #fff; }\n  .chromecast-playback .chromecast-playback-overlay .casting-media-title {\n    display: table-cell;\n    vertical-align: middle;\n    padding-left: 10px;\n    color: #fff; }\n\n.chromecast-button {\n  background: transparent;\n  border: 0;\n  width: 32px;\n  height: 32px;\n  font-size: 22px;\n  line-height: 32px;\n  letter-spacing: 0;\n  margin: 0 6px;\n  color: #fff;\n  opacity: 0.5;\n  vertical-align: middle;\n  text-align: left;\n  cursor: pointer;\n  float: left;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  -webkit-transition: all 0.1s ease;\n  -moz-transition: all 0.1s ease;\n  -o-transition: all 0.1s ease;\n  transition: all 0.1s ease; }\n  .chromecast-button:hover {\n    opacity: 0.75;\n    text-shadow: rgba(255, 255, 255, 0.8) 0 0 5px; }\n  .chromecast-button:focus {\n    outline: none; }\n  .chromecast-button svg {\n    width: 24px;\n    height: 24px; }\n    .chromecast-button svg #cast, .chromecast-button svg #cast-on, .chromecast-button svg #Path {\n      fill: #fff;\n      stroke: #fff;\n      stroke-width: 0.5px; }\n", ""]);
 
 	// exports
 
@@ -2206,6 +2224,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports) {
 
 	module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\"><g id=\"Page-1\" fill=\"none\" fill-rule=\"evenodd\"><g id=\"ic_cast_connected_black_24dp\"><g id=\"ic_remove_circle_white_24dp\"><path d=\"M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm18-7H5v1.63c3.96 1.28 7.09 4.41 8.37 8.37H19V7zM1 10v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z\" id=\"cast-on\" fill=\"#000\"></path><path id=\"bounds\" d=\"M0 0h24v24H0z\"></path></g></g></g></svg>"
+
+/***/ }),
+/* 22 */,
+/* 23 */
+/***/ (function(module, exports) {
+
+	module.exports = "<div class=chromecast-playback-overlay-status><div class=cast-icon-white><svg viewBox=\"0 0 25 25\" width=30 height=30 xmlns=http://www.w3.org/2000/svg><g id=Page-1 fill=none fill-rule=evenodd><path d=\"M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm18-7H5v1.63c3.96 1.28 7.09 4.41 8.37 8.37H19V7zM1 10v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z\" id=cast-on fill=\"#fff\"/><path id=bounds d=\"M0 0h24v24H0z\"/></g></svg></div><div class=casting-media-title>Casting &nbsp;<%= mediaTitle %></div></div>";
 
 /***/ })
 /******/ ])
